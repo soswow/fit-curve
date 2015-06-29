@@ -1,0 +1,19 @@
+{
+  "name": "fitCurves",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/fitCurves.js",
+  "scripts": {
+    "test": "node test/smoke.test.js",
+    "prepublish": "mkdir lib || coffee -c -o lib/ src/*.coffee"
+  },
+  "author": "Philip J. Schneider, Volker Poplawski, Aleksandr Motsjonov",
+  "license": "MIT",
+  "dependencies": {
+    "mathjs": "^1.7.0",
+    "lodash": "^3.9.3"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.9.3"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "name": "fitCurves",
+  "name": "fit-curves",
   "version": "0.0.1",
   "description": "",
   "main": "lib/fitCurves.js",

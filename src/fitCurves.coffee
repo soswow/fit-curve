@@ -170,4 +170,10 @@ computeMaxError = (points, bez, parameters) ->
 
 normalize = (v) -> math.divide(v, math.norm(v))
 
-module.exports = fitCurve
+if exports?
+    if module? and module.exports?
+        module.exports = fitCurve
+    else
+        exports.fitCurve = fitCurve
+else if window
+    window.fitCurve = fitCurve

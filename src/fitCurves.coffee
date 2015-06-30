@@ -3,9 +3,9 @@
     by Philip J. Schneider
     "Graphics Gems", Academic Press, 1990
 """
-math = require('mathjs')
-lodash = require('lodash')
-bezier = require('./bazier')
+
+math = require?('mathjs') || window?.mathjs
+lodash = require?('lodash') || window?._
 
 zeros = math.zeros
 multiply = math.multiply
@@ -16,6 +16,47 @@ dot = math.dot
 
 last = lodash.last
 zip = lodash.zip
+
+bezier =
+    # evaluates cubic bezier at t, return point
+    q: (ctrlPoly, t) ->
+        math.chain(multiply((1.0-t)**3, ctrlPoly[0]))
+        .add(multiply(3*(1.0-t)**2 * t, ctrlPoly[1]))
+        .add(multiply(3*(1.0-t) * t**2, ctrlPoly[2]))
+        .add(multiply(t**3, ctrlPoly[3]))
+        .done()
+
+    # evaluates cubic bezier first derivative at t, return point
+    qprime: (ctrlPoly, t) ->
+        math.chain(multiply(3*(1.0-t)**2, subtract(ctrlPoly[1],ctrlPoly[0])))
+        .add(multiply(6*(1.0-t) * t, subtract(ctrlPoly[2], ctrlPoly[1])))
+        .add(multiply(3*t**2, subtract(ctrlPoly[3],ctrlPoly[2])))
+        .done()
+
+    # evaluates cubic bezier second derivative at t, return point
+    qprimeprime: (ctrlPoly, t) ->
+        add(
+            multiply(
+                6*(1.0-t),
+                add(
+                    subtract(
+                        ctrlPoly[2],
+                        multiply(2, ctrlPoly[1])
+                    ),
+                    ctrlPoly[0]
+                )
+            ),
+            multiply(
+                6*(t),
+                add(
+                    subtract(
+                        ctrlPoly[3],
+                        multiply(2,ctrlPoly[2])
+                    ),
+                    ctrlPoly[1]
+                )
+            )
+        )
 
 # Fit one (ore more) Bezier curves to a set of points
 fitCurve = (points, maxError) ->

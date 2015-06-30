@@ -95,10 +95,12 @@ window.onload = function () {
 
     document.getElementById('clear-button').addEventListener('click', function () {
         rawLinesData = [];
-        rawLines.forEach(function (rawLine) {
+        rawLines.concat(fittedCurves).forEach(function (rawLine) {
             rawLine.remove();
         });
         rawLines = [];
+        fittedCurvesData = [];
+        fittedCurves = [];
     });
 };
 

@@ -7,6 +7,11 @@
     "test": "node test/smoke.test.js",
     "prepublish": "mkdir lib || coffee -c -o lib/ src/*.coffee"
   },
+  "homepage": "https://github.com/soswow/fit-curves",
+  "bugs":{
+    "url" : "https://github.com/soswow/fit-curves/issues",
+    "email" : "project@hostname.com"
+  },
   "author": "Philip J. Schneider, Volker Poplawski, Aleksandr Motsjonov",
   "license": "MIT",
   "dependencies": {

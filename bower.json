@@ -1,7 +1,7 @@
 {
   "name": "fit-curves",
   "version": "0.0.1",
-  "homepage": "https://github.com/soswow/fitCurves",
+  "homepage": "https://github.com/soswow/fit-curves",
   "authors": [
     "Philip J. Schneider <original version>",
     "Volker Poplawski <Python port>",

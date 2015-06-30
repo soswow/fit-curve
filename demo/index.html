@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Fit Curves Demo</title>
+    <script src="../bower_components/lodash/lodash.js"></script>
+    <script src="../bower_components/mathjs/dist/math.js"></script>
+    <script src="../lib/fitCurves.js"></script>
+    <script src="bower_components/raphael/raphael.js"></script>
+    <script src="demo.js"></script>
+    <style>
+        svg {
+            border: 1px solid gray;
+        }
+
+        #container, #sidebar {
+            float: left;
+        }
+
+        #sidebar {
+            padding-left: 15px;
+            width: 300px;
+
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<div id="sidebar">
+    <button id="clear-button">Clear</button><br>
+    <label for="errorInput">
+        Error:
+        <input id="errorInput" type="range" min="1" max="300" value="50"/>
+        <span id="errorValue">50</span>
+    </label>
+</div>
+</body>
+</html>

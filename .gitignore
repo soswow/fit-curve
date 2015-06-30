@@ -53,4 +53,4 @@ docs/_build/
 
 # Intellij Configuration
 .idea
-bower_components
+./bower_components

@@ -13,6 +13,14 @@
     "globals",
     "node"
   ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "python",
+    "package.json"
+  ],
   "license": "MIT",
   "dependencies": {
     "mathjs": "~1.7.0",

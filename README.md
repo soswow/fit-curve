@@ -17,3 +17,7 @@ var error = 50;
 var bezierCurves = fitCurve(points, error);
 // bezierCurves[0] === [[0, 0], [20.27317402, 20.27317402], [-1.24665147, 0], [20, 0]]
 ```
+
+You can play around with that in the [demo](https://soswow.github.io/fit-curves/demo).
+
+![demo](https://github.com/soswow/fit-curves/raw/master/demo-screenshot.png "Demo")

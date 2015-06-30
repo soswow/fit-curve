@@ -4,6 +4,11 @@ var rawLinesData = [];
 var fittedCurves = [];
 var fittedCurvesData = [];
 var error = 50;
+var showBezierDots = false;
+var showBezierControlPoints = false;
+var bezierDots = [];
+var bezierControlPoints = [];
+var bezierControlPointLines = [];
 
 window.onload = function () {
     paper = Raphael('container', 800, 400);
@@ -35,6 +40,18 @@ window.onload = function () {
         return str;
     }
 
+    function cleanBezierHelpGraphics(){
+        bezierDots
+            .concat(bezierControlPoints)
+            .concat(bezierControlPointLines)
+            .forEach(function(el){
+                el.remove();
+            });
+        bezierDots = [];
+        bezierControlPoints = [];
+        bezierControlPointLines = [];
+    }
+
     function updateLines(updateAllCurves) {
         rawLinesData.forEach(function (lineData, i) {
             if (rawLines.length <= i) {
@@ -63,12 +80,70 @@ window.onload = function () {
             }
         });
 
+        cleanBezierHelpGraphics();
+
+        fittedCurvesData.forEach(function (beziers) {
+            beziers.forEach(function (bezier, i) {
+                var p1 = bezier[0];
+                var cp1 = bezier[1];
+                var cp2 = bezier[2];
+                var p2 = bezier[3];
+                var getDotCircle = function (p) {
+                    var circle = paper.circle(p[0], p[1], 5);
+                    circle.attr({
+                        fill: 'rgb(200, 50, 0)',
+                        'fill-opacity': 0.5,
+                        stroke: null
+                    });
+                    return circle;
+                };
+
+                var getControlPoint = function (p) {
+                    var circle = paper.circle(p[0], p[1], 2);
+                    circle.attr({
+                        fill: 'rgb(100, 200, 0)',
+                        'fill-opacity': 0.5,
+                        stroke: null
+                    });
+                    return circle;
+                };
+
+                var getControlLine = function (p1, p2) {
+                    var pathString = "M " + p1[0] + " " + p1[1] + " ";
+                    pathString += "L " + p2[0] + " " + p2[1];
+                    var line = paper.path(pathString);
+                    line.attr({
+                        stroke: 'rgb(100, 200, 0)',
+                        'stroke-opacity': 0.5
+                    });
+                    return line;
+                };
+
+                if (showBezierDots) {
+                    if (i == 0) {
+                        bezierDots.push(getDotCircle(p1));
+                    }
+                    bezierDots.push(getDotCircle(p2));
+                }
+
+                if (showBezierControlPoints) {
+                    bezierControlPointLines.push(getControlLine(p1, cp1));
+                    bezierControlPointLines.push(getControlLine(cp2, p2));
+                    bezierControlPoints.push(getControlPoint(cp1));
+                    bezierControlPoints.push(getControlPoint(cp2));
+                }
+            });
+        });
     }
 
     var container = document.getElementsByTagName('svg').item(0);
+    var clearButton = document.getElementById('clear-button');
     var errorInput = document.getElementById('errorInput');
-    error = parseInt(errorInput.value);
     var errorValue = document.getElementById('errorValue');
+    var showBezierDotsCheckbox = document.getElementById('showBezierDotsCheckbox');
+    var showBezierControlPointsCheckbox = document.getElementById('showBezierControlPointsCheckbox');
+
+    error = parseInt(errorInput.value);
 
     var isMouseDown = false;
     container.addEventListener('mousedown', function () {
@@ -86,14 +161,14 @@ window.onload = function () {
             updateLines();
         }
     });
-    errorInput.addEventListener('input', function(){
+
+    errorInput.addEventListener('input', function () {
         error = parseInt(this.value);
         errorValue.innerText = error;
         updateLines(true);
     });
 
-
-    document.getElementById('clear-button').addEventListener('click', function () {
+    clearButton.addEventListener('click', function () {
         rawLinesData = [];
         rawLines.concat(fittedCurves).forEach(function (rawLine) {
             rawLine.remove();
@@ -101,6 +176,18 @@ window.onload = function () {
         rawLines = [];
         fittedCurvesData = [];
         fittedCurves = [];
+
+        cleanBezierHelpGraphics();
+    });
+
+    showBezierDotsCheckbox.addEventListener('click', function () {
+        showBezierDots = this.checked;
+        updateLines();
+    });
+
+    showBezierControlPointsCheckbox.addEventListener('click', function () {
+        showBezierControlPoints = this.checked;
+        updateLines();
     });
 };
 

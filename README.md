@@ -1,6 +1,3 @@
-fitCurves
-=========
-
 CoffeeScript/JavaScript implementation of Philip J. Schneider's "Algorithm for Automatically Fitting Digitized Curves" from the book "Graphics Gems".
 Converted from Python implementation. 
 

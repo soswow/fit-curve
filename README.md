@@ -12,12 +12,13 @@ Usage:
 ```javascript
 var fitCurve = require('fitCurve');
 var points = [[0, 0], [10, 10], [10, 0], [20, 0]];
-var error = 50;
+var error = 50; // The smaller the number - the much closer spline should be
 
 var bezierCurves = fitCurve(points, error);
 // bezierCurves[0] === [[0, 0], [20.27317402, 20.27317402], [-1.24665147, 0], [20, 0]]
+// where each element is [x, y] and elements are [first-point, control-point-1, control-point-2, second-point] 
 ```
 
-You can play around with that in the [demo](https://soswow.github.io/fit-curves/demo).
+You can play around with that in this [demo](https://soswow.github.io/fit-curves/demo).
 
 ![demo](https://github.com/soswow/fit-curves/raw/master/demo-screenshot.png "Demo")

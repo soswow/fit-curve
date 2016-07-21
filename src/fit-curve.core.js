@@ -118,8 +118,9 @@ class bezier {
  */
 function fitCurve(points, maxError) {
     var len = points.length,
-        leftTangent =  maths.normalize(maths.subtract(points[1], points[0])),
-        rightTangent = maths.normalize(maths.subtract(points[len - 2], points[len - 1]));
+        leftTangent =  createTangent(points[1], points[0]),
+        rightTangent = createTangent(points[len - 2], points[len - 1]);
+    
     return fitCubic(points, leftTangent, rightTangent, maxError);
 }
 
@@ -141,7 +142,7 @@ function fitCubic(points, leftTangent, rightTangent, error) {
         uPrime,         //Improved parameter values
         maxError,       //Maximum fitting error
         splitPoint,     //Point to split point set at if we need more than one curve
-        centerTangent,  //Unit tangent vector at splitPoint
+        centerVector, toCenterTangent, fromCenterTangent,  //Unit tangent vector(s) at splitPoint
         beziers,        //Array of fitted Bezier curves if we need more than one curve
         dist, i;
     
@@ -186,9 +187,22 @@ function fitCubic(points, leftTangent, rightTangent, error) {
     //Fitting failed -- split at max error point and fit recursively
     //console.log('splitting');
     beziers = [];
-    centerTangent = maths.normalize(maths.subtract(points[splitPoint - 1], points[splitPoint + 1]));
-    beziers = beziers.concat(fitCubic(points.slice(0, splitPoint + 1), leftTangent, centerTangent, error));
-    beziers = beziers.concat(fitCubic(points.slice(splitPoint), maths.mulItems(centerTangent, -1), rightTangent, error));
+    //To create a smooth transition from one curve segment to the next,
+    //we calculate the tangent of the points directly before and after the center,
+    //and use that same tangent both to and from the center point.
+    //However, should those two points be equal, the normal tangent calculation will fail.
+    //Instead, we assume that the center is a sharp corner and calculate the "to/from" tangents separately:
+    centerVector = maths.subtract(points[splitPoint - 1], points[splitPoint + 1]);
+    if(centerVector[0] || centerVector[1]) {
+        toCenterTangent = maths.normalize(centerVector);
+        fromCenterTangent = maths.mulItems(toCenterTangent, -1);
+    }
+    else {
+        toCenterTangent = createTangent(points[splitPoint - 1], points[splitPoint]);
+        fromCenterTangent = createTangent(points[splitPoint + 1], points[splitPoint]);
+    }
+    beziers = beziers.concat(fitCubic(points.slice(0, splitPoint + 1), leftTangent, toCenterTangent,    error));
+    beziers = beziers.concat(fitCubic(points.slice(splitPoint),        fromCenterTangent, rightTangent, error));
     return beziers;
 };
 
@@ -389,3 +403,10 @@ function computeMaxError(points, bez, parameters) {
     
     return [maxDist, splitPoint];
 };
+
+/**
+ * Creates a vector of length 1 which shows the direction from B to A
+ */
+function createTangent(pointA, pointB) {
+    return maths.normalize(maths.subtract(pointA, pointB));
+}

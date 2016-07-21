@@ -116,12 +116,12 @@ class bezier {
  * @param {Number} maxError - Tolerance, squared error between points and fitted curve
  * @returns {Array<Array<Array<Number>>>} Array of Bezier curves, where each element is [first-point, control-point-1, control-point-2, second-point] and points are [x, y]
  */
-function fitCurve(points, maxError) {
+function fitCurve(points, maxError, progressCallback) {
     var len = points.length,
         leftTangent =  createTangent(points[1], points[0]),
         rightTangent = createTangent(points[len - 2], points[len - 1]);
     
-    return fitCubic(points, leftTangent, rightTangent, maxError);
+    return fitCubic(points, leftTangent, rightTangent, maxError, progressCallback);
 }
 
 /**
@@ -134,16 +134,16 @@ function fitCurve(points, maxError) {
  * @param {Number} error - Tolerance, squared error between points and fitted curve
  * @returns {Array<Array<Array<Number>>>} Array of Bezier curves, where each element is [first-point, control-point-1, control-point-2, second-point] and points are [x, y]
  */
-function fitCubic(points, leftTangent, rightTangent, error) {
+function fitCubic(points, leftTangent, rightTangent, error, progressCallback) {
     const MaxIterations = 20;   //Max times to try iterating (to find an acceptable curve)
     
-    var bezCurve,       //Control points of fitted Bezier curve
-        u,              //Parameter values for point
-        uPrime,         //Improved parameter values
-        maxError,       //Maximum fitting error
-        splitPoint,     //Point to split point set at if we need more than one curve
+    var bezCurve,               //Control points of fitted Bezier curve
+        u,                      //Parameter values for point
+        uPrime,                 //Improved parameter values
+        maxError, prevErr,      //Maximum fitting error
+        splitPoint, prevSplit,  //Point to split point set at if we need more than one curve
         centerVector, toCenterTangent, fromCenterTangent,  //Unit tangent vector(s) at splitPoint
-        beziers,        //Array of fitted Bezier curves if we need more than one curve
+        beziers,                //Array of fitted Bezier curves if we need more than one curve
         dist, i;
     
     //console.log('fitCubic, ', points.length);
@@ -162,49 +162,101 @@ function fitCubic(points, leftTangent, rightTangent, error) {
     
     //Parameterize points, and attempt to fit curve
     u = chordLengthParameterize(points);
-    bezCurve = generateBezier(points, u, leftTangent, rightTangent);
+    [bezCurve, maxError, splitPoint] = generateAndReport(points, u, u, leftTangent, rightTangent, progressCallback)
     
-    //Find max deviation of points to fitted curve
-    [maxError, splitPoint] = computeMaxError(points, bezCurve, u);
     if (maxError < error) {
-        //console.log('cme ~', maxError, points[splitPoint]);
         return [bezCurve];
     }
     //If error not too large, try some reparameterization and iteration
     if (maxError < (error*error)) {
+
+        uPrime = u;
+        prevErr = maxError;
+        prevSplit = splitPoint;
+        
         for (i = 0; i < MaxIterations; i++) {
-            uPrime = reparameterize(bezCurve, points, u);
-            bezCurve = generateBezier(points, uPrime, leftTangent, rightTangent);
-            [maxError, splitPoint] = computeMaxError(points, bezCurve, uPrime);
+
+            uPrime = reparameterize(bezCurve, points, uPrime);
+            [bezCurve, maxError, splitPoint] = generateAndReport(points, u, uPrime, leftTangent, rightTangent, progressCallback);
+
             if (maxError < error) {
-                //console.log('cme '+i, maxError, points[splitPoint]);
                 return [bezCurve];
             }
-            u = uPrime;
+            //If the development of the fitted curve grinds to a halt,
+            //we abort this attempt (and try a shorter curve):
+            else if(splitPoint === prevSplit) {
+                let errChange = maxError/prevErr;
+                if((errChange > .9999) && (errChange < 1.0001)) {
+                    break;
+                }
+            }
+
+            prevErr = maxError;
+            prevSplit = splitPoint;
         }
     }
     
     //Fitting failed -- split at max error point and fit recursively
-    //console.log('splitting');
     beziers = [];
+    
     //To create a smooth transition from one curve segment to the next,
     //we calculate the tangent of the points directly before and after the center,
     //and use that same tangent both to and from the center point.
-    //However, should those two points be equal, the normal tangent calculation will fail.
-    //Instead, we assume that the center is a sharp corner and calculate the "to/from" tangents separately:
     centerVector = maths.subtract(points[splitPoint - 1], points[splitPoint + 1]);
-    if(centerVector[0] || centerVector[1]) {
-        toCenterTangent = maths.normalize(centerVector);
-        fromCenterTangent = maths.mulItems(toCenterTangent, -1);
+    //However, should those two points be equal, the normal tangent calculation will fail.
+    //Instead, we calculate the tangent from that "double-point" to the center point, and rotate 90deg.
+    if((centerVector[0] === 0) && (centerVector[1] === 0)) {
+        //toCenterTangent = createTangent(points[splitPoint - 1], points[splitPoint]);
+        //fromCenterTangent = createTangent(points[splitPoint + 1], points[splitPoint]);
+
+        //[x,y] -> [-y,x]: http://stackoverflow.com/a/4780141/1869660
+        centerVector = maths.subtract(points[splitPoint - 1], points[splitPoint])
+                            .reverse();
+        centerVector[0] = -centerVector[0];
     }
-    else {
-        toCenterTangent = createTangent(points[splitPoint - 1], points[splitPoint]);
-        fromCenterTangent = createTangent(points[splitPoint + 1], points[splitPoint]);
-    }
-    beziers = beziers.concat(fitCubic(points.slice(0, splitPoint + 1), leftTangent, toCenterTangent,    error));
-    beziers = beziers.concat(fitCubic(points.slice(splitPoint),        fromCenterTangent, rightTangent, error));
+    toCenterTangent = maths.normalize(centerVector);
+    //To and from need to point in opposite directions:
+    fromCenterTangent = maths.mulItems(toCenterTangent, -1);
+
+    /*
+    Note: An alternative to this "divide and conquer" recursion could be to always 
+          let new curve segments start by trying to go all the way to the end, 
+          instead of only to the end of the current subdivided polyline.
+          That might let many segments fit a few points more, reducing the number of total segments.
+
+          However, a few tests have shown that the segment reduction is insignificant
+          (240 pts, 100 err: 25 curves vs 27 curves. 140 pts, 100 err: 17 curves on both), 
+          and the results take twice as many steps and milliseconds to finish,
+          without looking any better than what we already have.
+    */
+    beziers = beziers.concat(fitCubic(points.slice(0, splitPoint + 1), leftTangent, toCenterTangent,    error, progressCallback));
+    beziers = beziers.concat(fitCubic(points.slice(splitPoint),        fromCenterTangent, rightTangent, error, progressCallback));
     return beziers;
 };
+
+function generateAndReport(points, paramsOrig, paramsPrime, leftTangent, rightTangent, progressCallback) {
+    var bezCurve, maxError, splitPoint;
+
+    bezCurve = generateBezier(points, paramsPrime, leftTangent, rightTangent, progressCallback);
+    //Find max deviation of points to fitted curve.
+    //Here we always use the original parameters (from chordLengthParameterize()),
+    //because we need to compare the current curve to the actual source polyline,
+    //and not the currently iterated parameters which reparameterize() & generateBezier() use,
+    //as those have probably drifted far away and may no longer be in ascending order.
+    [maxError, splitPoint] = computeMaxError(points, bezCurve, paramsOrig);
+
+    if(progressCallback) {
+        progressCallback({
+            bez: bezCurve, 
+            points: points,
+            params: paramsOrig, 
+            maxErr: maxError, 
+            maxPoint: splitPoint,
+        });
+    }
+
+    return [bezCurve, maxError, splitPoint];
+}
 
 /**
  * Use least-squares method to find Bezier control points for region.
@@ -381,18 +433,17 @@ function computeMaxError(points, bez, parameters) {
         maxDist,    //Maximum error
         splitPoint, //Point of maximum error
         v,          //Vector from point to curve
-        i, count, point, u;
+        i, count, point, t;
     
     maxDist = 0;
     splitPoint = points.length / 2;
 
     for (i = 0, count = points.length; i < count; i++) {
         point = points[i];
-        u = parameters[i];
-        
-        //len = maths.vectorLen(maths.subtract(bezier.q(bez, u), point));
-        //dist = len * len;
-        v = maths.subtract(bezier.q(bez, u), point);
+        //Find 't' for a point on the bez curve that's as close to 'point' as possible:
+        t = find_t(bez, parameters[i]);
+
+        v = maths.subtract(bezier.q(bez, t), point);
         dist = v[0]*v[0] + v[1]*v[1];
         
         if (dist > maxDist) {
@@ -403,6 +454,75 @@ function computeMaxError(points, bez, parameters) {
     
     return [maxDist, splitPoint];
 };
+
+function find_t(bez, param) {
+    if(param <= 0) { return 0; }
+    if(param >= 1) { return 1; }
+
+    /*
+        'param' is a value between 0 and 1 telling us the relative position 
+        of a point on the source polyline (linearly from the start (0) to the end (1)).
+        To see if a given curve - 'bez' - is a close approximation of the polyline,
+        we compare such a poly-point to the point on the curve that's the same 
+        relative distance along the curve's length.
+
+        But finding that curve-point takes a little work:
+        There is a function "B(t)" to find points along a curve from the parametric parameter 't'
+        (also relative from 0 to 1: http://stackoverflow.com/a/32841764/1869660
+                                    http://pomax.github.io/bezierinfo/#explanation),
+        but 't' isn't linear by length (http://gamedev.stackexchange.com/questions/105230).
+
+        So, we sample some points along the curve using a handful of values for 't'.
+        Then, we calculate the length between those samples via plain euclidean distance;
+        B(t) concentrates the points around sharp turns, so this should give us a good-enough outline of the curve.
+        Thus, for a given relative distance ('param'), we can now find an upper and lower value
+        for the corresponding 't' by searching through those sampled distances.
+        Finally, we just use linear interpolation to find a better value for the exact 't'.
+
+        More info:
+            http://gamedev.stackexchange.com/questions/105230/points-evenly-spaced-along-a-bezier-curve
+            http://stackoverflow.com/questions/29438398/cheap-way-of-calculating-cubic-bezier-length
+            http://steve.hollasch.net/cgindex/curves/cbezarclen.html
+            https://github.com/retuxx/tinyspline
+    */
+
+    const B_parts = 10;
+    var lenMax, lenMin, tMax, tMin, t;
+
+    //Sample 't's and map them to relative distances along the curve:
+    bez.__map_t_p = bez.__map_t_p || (function() {
+        var B_t_dist = [0],
+            B_t_prev = bez[0], B_t_curr, sumLen = 0;
+        for(var i=1; i<=B_parts; i++) {
+            B_t_curr = bezier.q(bez, i/B_parts);
+
+            sumLen += maths.vectorLen(maths.subtract(B_t_curr, B_t_prev));
+
+            B_t_dist.push(sumLen);
+            B_t_prev = B_t_curr;
+        }
+        //Normalize B_length to the same interval as the parameter distances; 0 to 1:
+        B_t_dist = B_t_dist.map(x => x/sumLen);
+        return B_t_dist;
+    })();
+
+    //Find the two t-s that the current param distance lies between,
+    //and then interpolate a somewhat accurate value for the exact t:
+    var t_distMap = bez.__map_t_p;
+    for(var i = 1; i <= B_parts; i++) {
+
+        if(param <= t_distMap[i]) {
+            tMin   = (i-1) / B_parts;
+            tMax   = i / B_parts;
+            lenMin = t_distMap[i-1];
+            lenMax = t_distMap[i];
+
+            t = (param-lenMin)/(lenMax-lenMin) * (tMax-tMin) + tMin;
+            break;
+        }
+    }
+    return t;
+}
 
 /**
  * Creates a vector of length 1 which shows the direction from B to A

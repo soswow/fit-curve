@@ -133,6 +133,27 @@ class bezier {
  * @returns {Array<Array<Array<Number>>>} Array of Bezier curves, where each element is [first-point, control-point-1, control-point-2, second-point] and points are [x, y]
  */
 function fitCurve(points, maxError, progressCallback) {
+    //Sanitize the points array before we start:
+    (function sanitize(points) {
+        var i = 1, 
+            prevPoint = points[0], 
+            currPoint;
+        while(i < points.length) {
+            currPoint = points[i];
+
+            //Remove two (or more) equal points in a row:
+            if((prevPoint[0] === currPoint[0]) && 
+               (prevPoint[1] === currPoint[1])) {
+                points.splice(i, 1);
+                console.log('removed', i, currPoint);
+            }
+            else {
+                prevPoint = currPoint;
+                i++;
+            }
+        }
+    })(points);
+
     var len = points.length,
         leftTangent =  createTangent(points[1], points[0]),
         rightTangent = createTangent(points[len - 2], points[len - 1]);

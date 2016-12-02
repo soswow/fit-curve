@@ -2,23 +2,24 @@
   "name": "fit-curves",
   "version": "0.1.1",
   "description": "CoffeeScript/JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
-  "main": "lib/fitCurves.js",
+  "main": "lib/fit-curve.js",
   "scripts": {
     "test": "node test/smoke.test.js",
-    "prepublish": "mkdir lib || coffee -c -o lib/ src/*.coffee"
+    "prepublish": "mkdir lib || src/build.sh"
   },
   "homepage": "https://github.com/soswow/fit-curves",
-  "bugs":{
-    "url" : "https://github.com/soswow/fit-curves/issues",
-    "email" : "project@hostname.com"
+  "bugs": {
+    "url": "https://github.com/soswow/fit-curves/issues",
+    "email": "project@hostname.com"
   },
   "author": "Philip J. Schneider, Volker Poplawski, Aleksandr Motsjonov",
   "license": "MIT",
-  "dependencies": {
-    "mathjs": "^1.7.0",
-    "lodash": "^3.9.3"
-  },
   "devDependencies": {
-    "coffee-script": "^1.9.3"
+    "babel-cli": "^6.18.0",
+    "babel-plugin-transform-es2015-modules-umd": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-es2015-loose": "^8.0.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "closurecompiler": "^1.6.1"
   }
 }

@@ -1,12 +1,13 @@
-var fitCurve = require('../lib/fitCurves');
+var fitCurve = require('../lib/fit-curve');
 var _ = require('lodash');
 
 var expectedResult;
 var actualResult;
 
-var assertSame = function (a, b) {
+var assertSame = function (a, b, message='') {
     if (Math.abs(a - b) > 1.0e-6) {
-        throw new Error(a + " isn't " + b);
+        message
+        throw new Error(message +  " " + a + " isn't " + b);
     }
 };
 
@@ -15,7 +16,7 @@ var verifyMatch = function(expectedResult, actualResult){
     console.log("VS");
     console.log(actualResult);
     console.log("------");
-    assertSame(expectedResult.length, actualResult.length);
+    assertSame(expectedResult.length, actualResult.length, "Result lengths: ");
     expectedResult.forEach(function (expectedBezierCurve, i) {
         var actualBezierCurve = actualResult[i];
         _.zip(actualBezierCurve, expectedBezierCurve).forEach(function (pairs) {
@@ -31,6 +32,7 @@ expectedResult = [
     [[0, 0], [20.27317402, 20.27317402], [-1.24665147, 0], [20, 0]]
 ];
 actualResult = fitCurve([[0, 0], [10, 10], [10, 0], [20, 0]], 50);
+console.log(actualResult);
 verifyMatch(expectedResult, actualResult);
 
 
@@ -55,4 +57,3 @@ actualResult = fitCurve([
 verifyMatch(expectedResult, actualResult);
 
 console.log('OK');
-

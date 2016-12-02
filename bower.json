@@ -7,8 +7,8 @@
     "Volker Poplawski <Python port>",
     "Aleksandr Motsjonov <soswow@gmail.com>"
   ],
-  "description": "CoffeeScript/JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
-  "main": "lib/fitCurves.js",
+  "description": "JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
+  "main": "lib/fit-curves.min.js",
   "moduleType": [
     "globals",
     "node"
@@ -16,14 +16,8 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components",
     "test",
-    "python",
     "package.json"
   ],
-  "license": "MIT",
-  "dependencies": {
-    "mathjs": "~1.7.0",
-    "lodash": "~3.9.3"
-  }
+  "license": "MIT"
 }

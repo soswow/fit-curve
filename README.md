@@ -5,10 +5,10 @@ Fit one or more cubic Bezier curves to a polyline.
 
 This is a JS implementation of Philip J. Schneider's C code. The original C code is available on http://graphicsgems.org/ as well as in https://github.com/erich666/GraphicsGems
 
-Usage:
+## Usage
 
 ```javascript
-var fitCurve = require('fitCurve');
+var fitCurve = require('fit-curve');
 var points = [[0, 0], [10, 10], [10, 0], [20, 0]];
 var error = 50; // The smaller the number - the much closer spline should be
 
@@ -20,3 +20,8 @@ var bezierCurves = fitCurve(points, error);
 You can play around with that in this [demo](https://soswow.github.io/fit-curves/demo).
 
 ![demo](https://github.com/soswow/fit-curves/raw/master/demo-screenshot.png "Demo")
+
+## Development
+
+`npm install` - builds transpiled and minified versions into `/lib`
+`npm test` - runs smoke tests

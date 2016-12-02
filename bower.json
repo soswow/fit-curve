@@ -1,21 +1,27 @@
 {
-  "name": "fit-curves",
-  "version": "0.1.1",
-  "homepage": "https://github.com/soswow/fit-curves",
+  "name": "fit-curve",
+  "version": "0.1.2",
+  "homepage": "https://github.com/soswow/fit-curve",
   "authors": [
     "Philip J. Schneider <original version>",
     "Volker Poplawski <Python port>",
     "Aleksandr Motsjonov <soswow@gmail.com>"
   ],
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/soswow/fit-curve.git"
+  },
   "description": "JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
-  "main": "lib/fit-curves.min.js",
+  "main": "lib/fit-curve.js",
   "moduleType": [
-    "globals",
-    "node"
+      "amd"
+      "globals",
+      "node"
   ],
   "ignore": [
     "**/.*",
     "node_modules",
+    "bower_components",
     "test",
     "package.json"
   ],

@@ -1,16 +1,16 @@
 {
-  "name": "fit-curves",
-  "version": "0.1.1",
-  "description": "CoffeeScript/JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
-  "main": "lib/fit-curve.js",
+  "name": "fit-curve",
+  "version": "0.1.2",
+  "description": "JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
+  "main": "src/fit-curve.js",
   "scripts": {
     "test": "node test/smoke.test.js",
-    "prepublish": "mkdir lib || src/build.sh"
+    "prepublish": "mkdir lib || script/build.sh"
   },
-  "homepage": "https://github.com/soswow/fit-curves",
+  "homepage": "https://github.com/soswow/fit-curve",
   "bugs": {
-    "url": "https://github.com/soswow/fit-curves/issues",
-    "email": "project@hostname.com"
+    "url": "https://github.com/soswow/fit-curve/issues",
+    "email": "soswow@gmail.com"
   },
   "author": "Philip J. Schneider, Volker Poplawski, Aleksandr Motsjonov",
   "license": "MIT",

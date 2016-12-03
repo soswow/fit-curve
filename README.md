@@ -27,7 +27,7 @@ var bezierCurves = fitCurve(points, error);
 // where each element is [x, y] and elements are [first-point, control-point-1, control-point-2, second-point]
 ```
 
-You can play around with that in this [demo](https://soswow.github.io/fit-curves/demo).
+You can play around with that in this [demo](http://soswow.github.io/fit-curve/demo).
 
 ![demo](https://github.com/soswow/fit-curves/raw/master/demo-screenshot.png "Demo")
 

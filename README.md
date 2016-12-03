@@ -35,4 +35,4 @@ You can play around with that in this [demo](http://soswow.github.io/fit-curve/d
 
 `npm install` - builds transpiled and minified versions into `/lib`
 
-`npm test` - runs smoke tests
+`npm test` - runs tests

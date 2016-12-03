@@ -22,14 +22,27 @@
  * @returns {Array<Array<Array<Number>>>} Array of Bezier curves, where each element is [first-point, control-point-1, control-point-2, second-point] and points are [x, y]
  */
 function fitCurve(points, maxError, progressCallback) {
+    if (!Array.isArray(points)) {
+        throw new TypeError("First argument should be an array");
+    }
+    points.forEach((point) => {
+        if(!Array.isArray(point) || point.length !== 2
+        || typeof point[0] !== 'number' || typeof point[1] !== 'number'){
+            throw Error("Each point should be an array of two numbers")
+        }
+    });
     // Remove duplicate points
-    points = points.filter((el, i) =>
-        i === 0 || !(el[0] === points[i-1][0] && el[1] === points[i-1][1])
+    points = points.filter((point, i) =>
+        i === 0 || !(point[0] === points[i-1][0] && point[1] === points[i-1][1])
     );
 
-    var len = points.length,
-        leftTangent =  createTangent(points[1], points[0]),
-        rightTangent = createTangent(points[len - 2], points[len - 1]);
+    if (points.length < 2) {
+        return [];
+    }
+
+    const len = points.length;
+    const leftTangent = createTangent(points[1], points[0]);
+    const rightTangent = createTangent(points[len - 2], points[len - 1]);
 
     return fitCubic(points, leftTangent, rightTangent, maxError, progressCallback);
 }

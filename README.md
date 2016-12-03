@@ -5,6 +5,16 @@ Fit one or more cubic Bezier curves to a polyline.
 
 This is a JS implementation of Philip J. Schneider's C code. The original C code is available on http://graphicsgems.org/ as well as in https://github.com/erich666/GraphicsGems
 
+## Install
+
+```
+npm install --save fit-curve
+```
+
+```
+bower install --save fit-curve
+```
+
 ## Usage
 
 ```javascript
@@ -24,4 +34,5 @@ You can play around with that in this [demo](https://soswow.github.io/fit-curves
 ## Development
 
 `npm install` - builds transpiled and minified versions into `/lib`
+
 `npm test` - runs smoke tests

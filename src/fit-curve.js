@@ -14,117 +14,6 @@
  *  https://github.com/soswow/fit-curves
  */
 
-/*
-    Simplified versions of what we need from math.js
-    Optimized for our input, which is only numbers and 1x2 arrays (i.e. [x, y] coordinates).
-*/
-class maths {
-    //zeros = logAndRun(math.zeros);
-    static zeros_Xx2x2(x) {
-        var zs = [];
-        while(x--) { zs.push([0,0]); }
-        return zs
-    }
-
-    //multiply = logAndRun(math.multiply);
-    static mulItems(items, multiplier) {
-        //return items.map(x => x*multiplier);
-        return [items[0]*multiplier, items[1]*multiplier];
-    }
-    static mulMatrix(m1, m2) {
-        //https://en.wikipedia.org/wiki/Matrix_multiplication#Matrix_product_.28two_matrices.29
-        //Simplified to only handle 1-dimensional matrices (i.e. arrays) of equal length:
-        //  return m1.reduce((sum,x1,i) => sum + (x1*m2[i]),
-        //                   0);
-        return (m1[0]*m2[0]) + (m1[1]*m2[1]);
-    }
-
-    //Only used to subract to points (or at least arrays):
-    //  subtract = logAndRun(math.subtract);
-    static subtract(arr1, arr2) {
-        //return arr1.map((x1, i) => x1 - arr2[i]);
-        return [arr1[0]-arr2[0], arr1[1]-arr2[1]];
-    }
-
-    //add = logAndRun(math.add);
-    static addArrays(arr1, arr2) {
-        //return arr1.map((x1, i) => x1 + arr2[i]);
-        return [arr1[0]+arr2[0], arr1[1]+arr2[1]];
-    }
-    static addItems(items, addition) {
-        //return items.map(x => x+addition);
-        return [items[0]+addition, items[1]+addition];
-    }
-
-    //var sum = logAndRun(math.sum);
-    static sum(items) {
-        return items.reduce((sum,x) => sum + x);
-    }
-
-    //chain = math.chain;
-
-    //Only used on two arrays. The dot product is equal to the matrix product in this case:
-    //  dot = logAndRun(math.dot);
-    static dot(m1, m2) {
-        return maths.mulMatrix(m1, m2);
-    }
-
-    //https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
-    //  var norm = logAndRun(math.norm);
-    static vectorLen(v) {
-        var a = v[0], b = v[1];
-        return Math.sqrt(a*a + b*b);
-    }
-
-    //math.divide = logAndRun(math.divide);
-    static divItems(items, divisor) {
-        //return items.map(x => x/divisor);
-        return [items[0]/divisor, items[1]/divisor];
-    }
-
-    //var dotPow = logAndRun(math.dotPow);
-    static squareItems(items) {
-        //return items.map(x => x*x);
-        var a = items[0], b = items[1];
-        return [a*a, b*b];
-    }
-
-    static normalize(v) {
-        return this.divItems(v, this.vectorLen(v));
-    }
-
-    //Math.pow = logAndRun(Math.pow);
-}
-
-
-class bezier {
-    //Evaluates cubic bezier at t, return point
-    static q(ctrlPoly, t) {
-        var tx = 1.0 - t;
-        var pA = maths.mulItems( ctrlPoly[0],      tx * tx * tx ),
-            pB = maths.mulItems( ctrlPoly[1],  3 * tx * tx *  t ),
-            pC = maths.mulItems( ctrlPoly[2],  3 * tx *  t *  t ),
-            pD = maths.mulItems( ctrlPoly[3],       t *  t *  t );
-        return maths.addArrays(maths.addArrays(pA, pB), maths.addArrays(pC, pD));
-    }
-
-    //Evaluates cubic bezier first derivative at t, return point
-    static qprime(ctrlPoly, t) {
-        var tx = 1.0 - t;
-        var pA = maths.mulItems( maths.subtract(ctrlPoly[1], ctrlPoly[0]),  3 * tx * tx ),
-            pB = maths.mulItems( maths.subtract(ctrlPoly[2], ctrlPoly[1]),  6 * tx *  t ),
-            pC = maths.mulItems( maths.subtract(ctrlPoly[3], ctrlPoly[2]),  3 *  t *  t );
-        return maths.addArrays(maths.addArrays(pA, pB), pC);
-    }
-
-    //Evaluates cubic bezier second derivative at t, return point
-    static qprimeprime(ctrlPoly, t) {
-        return maths.addArrays(maths.mulItems( maths.addArrays(maths.subtract(ctrlPoly[2], maths.mulItems(ctrlPoly[1], 2)), ctrlPoly[0]),  6 * (1.0 - t) ),
-                               maths.mulItems( maths.addArrays(maths.subtract(ctrlPoly[3], maths.mulItems(ctrlPoly[2], 2)), ctrlPoly[1]),  6 *        t  ));
-    }
-}
-
-
 /**
  * Fit one or more Bezier curves to a set of points.
  *
@@ -134,7 +23,9 @@ class bezier {
  */
 function fitCurve(points, maxError, progressCallback) {
     // Remove duplicate points
-    points = points.filter((el, i) => el !== points[i-1]);
+    points = points.filter((el, i) =>
+        i === 0 || !(el[0] === points[i-1][0] && el[1] === points[i-1][1])
+    );
 
     var len = points.length,
         leftTangent =  createTangent(points[1], points[0]),
@@ -551,6 +442,116 @@ function find_t(bez, param, t_distMap, B_parts) {
  */
 function createTangent(pointA, pointB) {
     return maths.normalize(maths.subtract(pointA, pointB));
+}
+
+/*
+    Simplified versions of what we need from math.js
+    Optimized for our input, which is only numbers and 1x2 arrays (i.e. [x, y] coordinates).
+*/
+class maths {
+    //zeros = logAndRun(math.zeros);
+    static zeros_Xx2x2(x) {
+        var zs = [];
+        while(x--) { zs.push([0,0]); }
+        return zs
+    }
+
+    //multiply = logAndRun(math.multiply);
+    static mulItems(items, multiplier) {
+        //return items.map(x => x*multiplier);
+        return [items[0]*multiplier, items[1]*multiplier];
+    }
+    static mulMatrix(m1, m2) {
+        //https://en.wikipedia.org/wiki/Matrix_multiplication#Matrix_product_.28two_matrices.29
+        //Simplified to only handle 1-dimensional matrices (i.e. arrays) of equal length:
+        //  return m1.reduce((sum,x1,i) => sum + (x1*m2[i]),
+        //                   0);
+        return (m1[0]*m2[0]) + (m1[1]*m2[1]);
+    }
+
+    //Only used to subract to points (or at least arrays):
+    //  subtract = logAndRun(math.subtract);
+    static subtract(arr1, arr2) {
+        //return arr1.map((x1, i) => x1 - arr2[i]);
+        return [arr1[0]-arr2[0], arr1[1]-arr2[1]];
+    }
+
+    //add = logAndRun(math.add);
+    static addArrays(arr1, arr2) {
+        //return arr1.map((x1, i) => x1 + arr2[i]);
+        return [arr1[0]+arr2[0], arr1[1]+arr2[1]];
+    }
+    static addItems(items, addition) {
+        //return items.map(x => x+addition);
+        return [items[0]+addition, items[1]+addition];
+    }
+
+    //var sum = logAndRun(math.sum);
+    static sum(items) {
+        return items.reduce((sum,x) => sum + x);
+    }
+
+    //chain = math.chain;
+
+    //Only used on two arrays. The dot product is equal to the matrix product in this case:
+    //  dot = logAndRun(math.dot);
+    static dot(m1, m2) {
+        return maths.mulMatrix(m1, m2);
+    }
+
+    //https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
+    //  var norm = logAndRun(math.norm);
+    static vectorLen(v) {
+        var a = v[0], b = v[1];
+        return Math.sqrt(a*a + b*b);
+    }
+
+    //math.divide = logAndRun(math.divide);
+    static divItems(items, divisor) {
+        //return items.map(x => x/divisor);
+        return [items[0]/divisor, items[1]/divisor];
+    }
+
+    //var dotPow = logAndRun(math.dotPow);
+    static squareItems(items) {
+        //return items.map(x => x*x);
+        var a = items[0], b = items[1];
+        return [a*a, b*b];
+    }
+
+    static normalize(v) {
+        return this.divItems(v, this.vectorLen(v));
+    }
+
+    //Math.pow = logAndRun(Math.pow);
+}
+
+
+class bezier {
+    //Evaluates cubic bezier at t, return point
+    static q(ctrlPoly, t) {
+        var tx = 1.0 - t;
+        var pA = maths.mulItems( ctrlPoly[0],      tx * tx * tx ),
+            pB = maths.mulItems( ctrlPoly[1],  3 * tx * tx *  t ),
+            pC = maths.mulItems( ctrlPoly[2],  3 * tx *  t *  t ),
+            pD = maths.mulItems( ctrlPoly[3],       t *  t *  t );
+        return maths.addArrays(maths.addArrays(pA, pB), maths.addArrays(pC, pD));
+    }
+
+    //Evaluates cubic bezier first derivative at t, return point
+    static qprime(ctrlPoly, t) {
+        var tx = 1.0 - t;
+        var pA = maths.mulItems( maths.subtract(ctrlPoly[1], ctrlPoly[0]),  3 * tx * tx ),
+            pB = maths.mulItems( maths.subtract(ctrlPoly[2], ctrlPoly[1]),  6 * tx *  t ),
+            pC = maths.mulItems( maths.subtract(ctrlPoly[3], ctrlPoly[2]),  3 *  t *  t );
+        return maths.addArrays(maths.addArrays(pA, pB), pC);
+    }
+
+    //Evaluates cubic bezier second derivative at t, return point
+    static qprimeprime(ctrlPoly, t) {
+        return maths.addArrays(maths.mulItems( maths.addArrays(maths.subtract(ctrlPoly[2], maths.mulItems(ctrlPoly[1], 2)), ctrlPoly[0]),  6 * (1.0 - t) ),
+                               maths.mulItems( maths.addArrays(maths.subtract(ctrlPoly[3], maths.mulItems(ctrlPoly[2], 2)), ctrlPoly[1]),  6 *        t  ));
+    }
 }
 
 module.exports = fitCurve;

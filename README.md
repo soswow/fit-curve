@@ -31,6 +31,12 @@ You can play around with that in this [demo](http://soswow.github.io/fit-curve/d
 
 ![demo](https://github.com/soswow/fit-curves/raw/master/demo-screenshot.png "Demo")
 
+## Changelog
+
+### 0.1.5
+
+- Bug fix #13. Use compiled (ES2015) version as main entry point.
+
 ## Development
 
 `npm install` - builds transpiled and minified versions into `/lib`

@@ -2,7 +2,7 @@
   "name": "fit-curve",
   "version": "0.1.4",
   "description": "JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
-  "main": "src/fit-curve.js",
+  "main": "lib/fit-curve.js",
   "scripts": {
     "test": "mocha",
     "prepublish": "mkdir lib || script/build.sh"

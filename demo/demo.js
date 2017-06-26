@@ -154,9 +154,10 @@ window.onload = function () {
         isMouseDown = false;
     });
     container.addEventListener('mousemove', function (event) {
-        var x = event.offsetX;
-        var y = event.offsetY;
         if (isMouseDown) {
+            var containerArea = container.getBoundingClientRect(),
+                x = event.clientX - containerArea.left,
+                y = event.clientY - containerArea.top;
             rawLinesData[rawLinesData.length - 1].push([x, y]);
             updateLines();
         }

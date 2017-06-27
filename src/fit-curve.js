@@ -311,8 +311,8 @@ function newtonRaphsonRootFind(bez, point, u) {
 
     var d = maths.subtract(bezier.q(bez, u), point),
         qprime = bezier.qprime(bez, u),
-        numerator = /*sum(*/maths.mulMatrix(d, qprime)/*)*/,
-        denominator = maths.sum(maths.addItems( maths.squareItems(qprime), maths.mulMatrix(d, bezier.qprimeprime(bez, u)) ));
+        numerator = maths.mulMatrix(d, qprime),
+        denominator = maths.sum(maths.squareItems(qprime)) + 2 * maths.mulMatrix(d, bezier.qprimeprime(bez, u));
 
     if (denominator === 0) {
         return u;

@@ -33,7 +33,10 @@ function fitCurve(points, maxError, progressCallback) {
     });
 
     // Remove duplicate points
-    points = points.filter((point, i) => i === 0 || !point.every((val, j) => val === points[i-1][j]));
+    points = points.filter((point, i) => {
+      return i === 0 || !point.every((val, j) => val === points[i-1][j])
+    });
+
     if (points.length < 2) {
         return [];
     }
@@ -80,6 +83,7 @@ function fitCubic(points, leftTangent, rightTangent, error, progressCallback) {
         ];
         return [bezCurve];
     }
+
 
     //Parameterize points, and attempt to fit curve
     u = chordLengthParameterize(points);
@@ -484,8 +488,7 @@ class maths {
 
     //add = logAndRun(math.add);
     static addArrays(arr1, arr2) {
-        //return arr1.map((x1, i) => x1 + arr2[i]);
-        return [arr1[0]+arr2[0], arr1[1]+arr2[1]];
+        return arr1.map((x1, i) => x1 + arr2[i]);
     }
     static addItems(items, addition) {
         return items.map(x => x+addition);

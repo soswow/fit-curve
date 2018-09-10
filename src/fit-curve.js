@@ -475,9 +475,8 @@ class maths {
     static mulMatrix(m1, m2) {
         //https://en.wikipedia.org/wiki/Matrix_multiplication#Matrix_product_.28two_matrices.29
         //Simplified to only handle 1-dimensional matrices (i.e. arrays) of equal length:
-        //  return m1.reduce((sum,x1,i) => sum + (x1*m2[i]),
-        //                   0);
-        return (m1[0]*m2[0]) + (m1[1]*m2[1]);
+         return m1.reduce((sum,x1,i) => sum + (x1*m2[i]),
+                          0);
     }
 
     //Only used to subract to points (or at least arrays):

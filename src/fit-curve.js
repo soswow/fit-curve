@@ -26,14 +26,14 @@ function fitCurve(points, maxError, progressCallback) {
         throw new TypeError("First argument should be an array");
     }
     points.forEach((point) => {
-        if(!Array.isArray(point) || point.some(item => typeof item !== 'number')) {
-            throw Error("Each point should be an array of numbers");
+        if(!Array.isArray(point) || point.some(item => typeof item !== 'number')
+        || point.length !== points[0].length) {
+            throw Error("Each point should be an array of numbers. Each point should have the same amount of numbers.");
         }
     });
+
     // Remove duplicate points
-    points = points.filter((point, i) =>
-        i === 0 || !(point[0] === points[i-1][0] && point[1] === points[i-1][1])
-    );
+    points = points.filter((point, i) => i === 0 || !point.every((val, j) => val === points[i-1][j]));
 
     if (points.length < 2) {
         return [];

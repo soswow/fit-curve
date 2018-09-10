@@ -64,7 +64,7 @@ describe("Fitten curve", () => {
     describe("when one of the points doesn't conform expected format", () => {
         it("should throw an exception", () => {
             expect(() => fitCurve([[1, 1], [1]])).to.throw(Error,
-                "Each point should be an array of two numbers");
+                "Each point should be an array of numbers. Each point should have the same amount of numbers.");
         });
     });
 

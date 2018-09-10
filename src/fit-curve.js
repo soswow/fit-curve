@@ -468,8 +468,7 @@ class maths {
 
     //multiply = logAndRun(math.multiply);
     static mulItems(items, multiplier) {
-        //return items.map(x => x*multiplier);
-        return [items[0]*multiplier, items[1]*multiplier];
+        return items.map(x => x*multiplier);
     }
     static mulMatrix(m1, m2) {
         //https://en.wikipedia.org/wiki/Matrix_multiplication#Matrix_product_.28two_matrices.29
@@ -482,8 +481,7 @@ class maths {
     //Only used to subract to points (or at least arrays):
     //  subtract = logAndRun(math.subtract);
     static subtract(arr1, arr2) {
-        //return arr1.map((x1, i) => x1 - arr2[i]);
-        return [arr1[0]-arr2[0], arr1[1]-arr2[1]];
+        return arr1.map((x1, i) => x1 - arr2[i]);
     }
 
     //add = logAndRun(math.add);
@@ -492,8 +490,7 @@ class maths {
         return [arr1[0]+arr2[0], arr1[1]+arr2[1]];
     }
     static addItems(items, addition) {
-        //return items.map(x => x+addition);
-        return [items[0]+addition, items[1]+addition];
+        return items.map(x => x+addition);
     }
 
     //var sum = logAndRun(math.sum);
@@ -512,21 +509,17 @@ class maths {
     //https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
     //  var norm = logAndRun(math.norm);
     static vectorLen(v) {
-        var a = v[0], b = v[1];
-        return Math.sqrt(a*a + b*b);
+        return Math.hypot(...v);
     }
 
     //math.divide = logAndRun(math.divide);
     static divItems(items, divisor) {
-        //return items.map(x => x/divisor);
-        return [items[0]/divisor, items[1]/divisor];
+        return items.map(x => x/divisor);
     }
 
     //var dotPow = logAndRun(math.dotPow);
     static squareItems(items) {
-        //return items.map(x => x*x);
-        var a = items[0], b = items[1];
-        return [a*a, b*b];
+        return items.map(x => x*x);
     }
 
     static normalize(v) {

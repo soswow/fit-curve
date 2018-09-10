@@ -26,9 +26,8 @@ function fitCurve(points, maxError, progressCallback) {
         throw new TypeError("First argument should be an array");
     }
     points.forEach((point) => {
-        if(!Array.isArray(point) || point.length !== 2
-        || typeof point[0] !== 'number' || typeof point[1] !== 'number'){
-            throw Error("Each point should be an array of two numbers")
+        if(!Array.isArray(point) || point.some(item => typeof item !== 'number')) {
+            throw Error("Each point should be an array of numbers");
         }
     });
     // Remove duplicate points

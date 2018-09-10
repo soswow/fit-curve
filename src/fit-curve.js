@@ -34,7 +34,6 @@ function fitCurve(points, maxError, progressCallback) {
 
     // Remove duplicate points
     points = points.filter((point, i) => i === 0 || !point.every((val, j) => val === points[i-1][j]));
-
     if (points.length < 2) {
         return [];
     }
@@ -128,7 +127,7 @@ function fitCubic(points, leftTangent, rightTangent, error, progressCallback) {
     //However, this won't work if they're the same point, because the line we
     //want to use as a tangent would be 0. Instead, we calculate the line from
     //that "double-point" to the center point, and use its tangent.
-    if ((centerVector[0] === 0) && (centerVector[1] === 0)) {
+    if(centerVector.every(val => val === 0)) {
         //[x,y] -> [-y,x]: http://stackoverflow.com/a/4780141/1869660
         centerVector = maths.subtract(points[splitPoint-1], points[splitPoint]);
         [centerVector[0],centerVector[1]] = [-centerVector[1],centerVector[0]];

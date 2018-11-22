@@ -7,8 +7,7 @@ This is a JS implementation of Philip J. Schneider's C code. The original C code
 
 ## Install
 
-This 3D bezier fork is not installable from the main npm repo (will hopefully be merged in the near future though!)
-You can still install it via a git url:
+Before this 3D fork of the original [fit-curve](https://github.com/soswow/fit-curve) has been merged, you can intall this fork via:
 
 ```.sh
 npm install nylki/fit-curve

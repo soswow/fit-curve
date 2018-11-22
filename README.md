@@ -7,12 +7,11 @@ This is a JS implementation of Philip J. Schneider's C code. The original C code
 
 ## Install
 
-```
-npm install --save fit-curve
-```
+This 3D bezier fork is not installable from the main npm repo (will hopefully be merged in the near future though!)
+You can still install it via a git url:
 
-```
-bower install --save fit-curve
+```.sh
+npm install nylki/fit-curve
 ```
 
 ## Usage

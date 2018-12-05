@@ -26,14 +26,15 @@ function fitCurve(points, maxError, progressCallback) {
         throw new TypeError("First argument should be an array");
     }
     points.forEach((point) => {
-        if(!Array.isArray(point) || point.length !== 2
-        || typeof point[0] !== 'number' || typeof point[1] !== 'number'){
-            throw Error("Each point should be an array of two numbers")
+        if(!Array.isArray(point) || point.some(item => typeof item !== 'number')
+        || point.length !== points[0].length) {
+            throw Error("Each point should be an array of numbers. Each point should have the same amount of numbers.");
         }
     });
+
     // Remove duplicate points
     points = points.filter((point, i) =>
-        i === 0 || !(point[0] === points[i-1][0] && point[1] === points[i-1][1])
+      i === 0 || !point.every((val, j) => val === points[i-1][j])
     );
 
     if (points.length < 2) {
@@ -83,6 +84,7 @@ function fitCubic(points, leftTangent, rightTangent, error, progressCallback) {
         return [bezCurve];
     }
 
+
     //Parameterize points, and attempt to fit curve
     u = chordLengthParameterize(points);
     [bezCurve, maxError, splitPoint] = generateAndReport(points, u, u, leftTangent, rightTangent, progressCallback)
@@ -129,7 +131,7 @@ function fitCubic(points, leftTangent, rightTangent, error, progressCallback) {
     //However, this won't work if they're the same point, because the line we
     //want to use as a tangent would be 0. Instead, we calculate the line from
     //that "double-point" to the center point, and use its tangent.
-    if ((centerVector[0] === 0) && (centerVector[1] === 0)) {
+    if(centerVector.every(val => val === 0)) {
         //[x,y] -> [-y,x]: http://stackoverflow.com/a/4780141/1869660
         centerVector = maths.subtract(points[splitPoint-1], points[splitPoint]);
         [centerVector[0],centerVector[1]] = [-centerVector[1],centerVector[0]];
@@ -468,32 +470,26 @@ class maths {
 
     //multiply = logAndRun(math.multiply);
     static mulItems(items, multiplier) {
-        //return items.map(x => x*multiplier);
-        return [items[0]*multiplier, items[1]*multiplier];
+        return items.map(x => x*multiplier);
     }
     static mulMatrix(m1, m2) {
         //https://en.wikipedia.org/wiki/Matrix_multiplication#Matrix_product_.28two_matrices.29
         //Simplified to only handle 1-dimensional matrices (i.e. arrays) of equal length:
-        //  return m1.reduce((sum,x1,i) => sum + (x1*m2[i]),
-        //                   0);
-        return (m1[0]*m2[0]) + (m1[1]*m2[1]);
+         return m1.reduce((sum,x1,i) => sum + (x1*m2[i]), 0);
     }
 
     //Only used to subract to points (or at least arrays):
     //  subtract = logAndRun(math.subtract);
     static subtract(arr1, arr2) {
-        //return arr1.map((x1, i) => x1 - arr2[i]);
-        return [arr1[0]-arr2[0], arr1[1]-arr2[1]];
+        return arr1.map((x1, i) => x1 - arr2[i]);
     }
 
     //add = logAndRun(math.add);
     static addArrays(arr1, arr2) {
-        //return arr1.map((x1, i) => x1 + arr2[i]);
-        return [arr1[0]+arr2[0], arr1[1]+arr2[1]];
+        return arr1.map((x1, i) => x1 + arr2[i]);
     }
     static addItems(items, addition) {
-        //return items.map(x => x+addition);
-        return [items[0]+addition, items[1]+addition];
+        return items.map(x => x+addition);
     }
 
     //var sum = logAndRun(math.sum);
@@ -512,21 +508,17 @@ class maths {
     //https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
     //  var norm = logAndRun(math.norm);
     static vectorLen(v) {
-        var a = v[0], b = v[1];
-        return Math.sqrt(a*a + b*b);
+        return Math.hypot(...v);
     }
 
     //math.divide = logAndRun(math.divide);
     static divItems(items, divisor) {
-        //return items.map(x => x/divisor);
-        return [items[0]/divisor, items[1]/divisor];
+        return items.map(x => x/divisor);
     }
 
     //var dotPow = logAndRun(math.dotPow);
     static squareItems(items) {
-        //return items.map(x => x*x);
-        var a = items[0], b = items[1];
-        return [a*a, b*b];
+        return items.map(x => x*x);
     }
 
     static normalize(v) {

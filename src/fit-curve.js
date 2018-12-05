@@ -33,9 +33,9 @@ function fitCurve(points, maxError, progressCallback) {
     });
 
     // Remove duplicate points
-    points = points.filter((point, i) => {
-      return i === 0 || !point.every((val, j) => val === points[i-1][j])
-    });
+    points = points.filter((point, i) =>
+      i === 0 || !point.every((val, j) => val === points[i-1][j])
+    );
 
     if (points.length < 2) {
         return [];
@@ -475,8 +475,7 @@ class maths {
     static mulMatrix(m1, m2) {
         //https://en.wikipedia.org/wiki/Matrix_multiplication#Matrix_product_.28two_matrices.29
         //Simplified to only handle 1-dimensional matrices (i.e. arrays) of equal length:
-         return m1.reduce((sum,x1,i) => sum + (x1*m2[i]),
-                          0);
+         return m1.reduce((sum,x1,i) => sum + (x1*m2[i]), 0);
     }
 
     //Only used to subract to points (or at least arrays):

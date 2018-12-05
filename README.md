@@ -7,10 +7,8 @@ This is a JS implementation of Philip J. Schneider's C code. The original C code
 
 ## Install
 
-Before this 3D fork of the original [fit-curve](https://github.com/soswow/fit-curve) has been merged, you can install this fork via:
-
-```.sh
-npm install nylki/fit-curve
+```
+npm install --save fit-curve
 ```
 
 ## Usage

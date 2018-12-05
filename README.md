@@ -1,18 +1,16 @@
 JavaScript implementation of Philip J. Schneider's "Algorithm for Automatically Fitting Digitized Curves" from the book "Graphics Gems".
 Converted from Python implementation.
 
-Fit one or more cubic Bezier curves to a polyline.
+Fit one or more cubic Bezier curves to a polyline. Works with 2D and 3D curves (and should work for higher dimensions too).
 
 This is a JS implementation of Philip J. Schneider's C code. The original C code is available on http://graphicsgems.org/ as well as in https://github.com/erich666/GraphicsGems
 
 ## Install
 
-```
-npm install --save fit-curve
-```
+Before this 3D fork of the original [fit-curve](https://github.com/soswow/fit-curve) has been merged, you can install this fork via:
 
-```
-bower install --save fit-curve
+```.sh
+npm install nylki/fit-curve
 ```
 
 ## Usage

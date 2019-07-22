@@ -23,7 +23,10 @@ var bezierCurves = fitCurve(points, error);
 // where each element is [x, y] and elements are [first-point, control-point-1, control-point-2, second-point]
 ```
 
-You can play around with that in this [demo](http://soswow.github.io/fit-curve/demo).
+You can play around with it in these demos:
+- [2D curve fit](http://soswow.github.io/fit-curve/demo)
+- [3D curve fit](https://nylki.github.io/fit-bezier-3d-visualization/)
+
 
 ![demo](https://github.com/soswow/fit-curves/raw/master/demo-screenshot.png "Demo")
 

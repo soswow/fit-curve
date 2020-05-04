@@ -21,7 +21,7 @@
     "babel-preset-es2015-loose": "^8.0.0",
     "babel-preset-stage-2": "^6.18.0",
     "chai": "^3.5.0",
-    "closurecompiler": "^1.6.1",
-    "mocha": "^3.2.0"
+    "google-closure-compiler": "^20200426.0.0",
+    "mocha": "^7.1.2"
   }
 }

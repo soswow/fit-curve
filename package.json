@@ -12,7 +12,14 @@
     "url": "https://github.com/soswow/fit-curve/issues",
     "email": "soswow@gmail.com"
   },
-  "author": "Philip J. Schneider, Volker Poplawski, Aleksandr Motsjonov",
+  "author": "Philip J. Schneider",
+  "contributors": [
+    "Volker Poplawski <volkerp>",
+    "Aleksandr Motsjonov <soswow>",
+    "<Yay295>",
+    "Andreas Borgen <Sphinxxxx>",
+    "Tom Brewe <nylki>"
+  ],
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.18.0",

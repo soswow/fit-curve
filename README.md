@@ -29,6 +29,10 @@ You can play around with that in this [demo](http://soswow.github.io/fit-curve/d
 
 ## Changelog
 
+### 0.1.7
+
+- Bug fix #24.
+
 ### 0.1.6
 
 - Bug fix #13. Use compiled (ES2015) version as main entry point.

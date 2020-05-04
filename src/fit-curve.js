@@ -1,8 +1,3 @@
-// ==ClosureCompiler==
-// @output_file_name fit-curve.min.js
-// @compilation_level SIMPLE_OPTIMIZATIONS
-// ==/ClosureCompiler==
-
 /**
  *  @preserve  JavaScript implementation of
  *  Algorithm for Automatically Fitting Digitized Curves
@@ -89,7 +84,7 @@ function fitCubic(points, leftTangent, rightTangent, error, progressCallback) {
     u = chordLengthParameterize(points);
     [bezCurve, maxError, splitPoint] = generateAndReport(points, u, u, leftTangent, rightTangent, progressCallback)
 
-    if (maxError < error) {
+    if ((maxError === 0) || (maxError < error)) {
         return [bezCurve];
     }
     //If error not too large, try some reparameterization and iteration
@@ -358,7 +353,7 @@ function computeMaxError(points, bez, parameters) {
         i, count, point, t;
 
     maxDist = 0;
-    splitPoint = points.length / 2;
+    splitPoint = Math.floor(points.length / 2);
 
     const t_distMap = mapTtoRelativeDistances(bez, 10);
 

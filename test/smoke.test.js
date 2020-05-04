@@ -55,6 +55,14 @@ describe("Fitten curve", () => {
         verifyMatch(expectedResult, actualResult);
     });
 
+    it("shouldn't fail on perfect match", () => {
+        const expectedResult = [
+            [[0, 0], [6.66666666, 2.66666666], [13.33333333, 5.33333333], [20, 8]]
+        ];
+        const actualResult = fitCurve([[0, 0], [10, 4], [20, 8]], 0);
+        verifyMatch(expectedResult, actualResult);
+    });
+
     describe("when no arguments provided", () => {
         it("should throw a TypeError exception", () => {
             expect(() => fitCurve()).to.throw(TypeError, "First argument should be an array");

@@ -3,6 +3,7 @@
   "version": "0.1.7",
   "description": "JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
   "main": "lib/fit-curve.js",
+  "types": "fit-curve.d.ts",
   "scripts": {
     "test": "mocha",
     "prepublish": "mkdir lib || script/build.sh"

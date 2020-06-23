@@ -552,3 +552,5 @@ class bezier {
 }
 
 module.exports = fitCurve;
+module.exports.fitCubic = fitCubic;
+module.exports.createTangent = createTangent;

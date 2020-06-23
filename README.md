@@ -29,6 +29,10 @@ You can play around with that in this [demo](http://soswow.github.io/fit-curve/d
 
 ## Changelog
 
+### 0.2.0
+
+- Expose fitCubic, createTangent & add TypeScript declaration
+
 ### 0.1.7
 
 - Bug fix #24.

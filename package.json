@@ -1,6 +1,6 @@
 {
   "name": "fit-curve",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "JavaScript implementation of Philip J. Schneider's \"Algorithm for Automatically Fitting Digitized Curves\" from the book \"Graphics Gems\"",
   "main": "lib/fit-curve.js",
   "types": "fit-curve.d.ts",
